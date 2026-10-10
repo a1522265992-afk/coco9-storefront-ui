@@ -1,0 +1,9 @@
+{
+  "name": "coco9-storefront-ui",
+  "version": "1.0.0",
+  "description": "Six framework-free digital storefront themes, isolated from commerce infrastructure",
+  "type": "module",
+  "license": "MIT",
+  "engines": {"node": ">=20"},
+  "scripts": {"start": "node server.mjs", "test": "node --test test/*.test.mjs"}
+}
