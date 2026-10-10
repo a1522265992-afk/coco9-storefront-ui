@@ -172,7 +172,7 @@ npm run build:preview
 在 `your-store.js` 中渲染店面与商品：
 
 ```js
-import {renderStorefront, renderProduct, themeFor} from './src/index.js';
+import {renderStorefront, renderProduct, themeFor, bindLaptop} from './src/index.js';
 
 // 可传设计标识 orbital，也可传兼容 ID dark-business。
 const theme = themeFor('orbital');
@@ -197,9 +197,15 @@ main.querySelector('.products').innerHTML = renderProduct({
   href: '#/product/your-product',
   soldOut: false,
 }, theme.id);
+
+// 极简旗舰的电脑支持鼠标跟随、拖动、方向键与复位；其他模板无需处理。
+const disposeLaptop = bindLaptop(main);
+// 替换 main 内容或离开页面前调用 disposeLaptop()，释放事件与待绘制帧。
 ```
 
 这个示例负责渲染。继续参考 `demo.js`，为 `.search`、`data-category`、`data-catalog-jump` 和商品链接绑定搜索、分类、滚动与路由；移动菜单接线方式见 `src/navigation.js`。如已有路由系统，在适配层将 `#/product/...` 映射到你的商品详情页。
+
+极简旗舰的电脑使用原图的有限角度视差，并非可以查看背面的 360° 模型。手机左右滑动可调整视角，上下滑动仍滚动页面；点击“复位”恢复。键盘方向键可调整，Esc、Home 或 Enter 可复位；系统开启“减少动态效果”时显示静态图片。交互使用 CSS 和按需更新，无持续动画循环或 WebGL 依赖。
 
 商品名称、说明、价格与分类文本会转义。商品图片接受站内绝对路径或 HTTPS 地址。`src/` 本身不请求 API、不保存账户凭证、不处理支付；结算金额、库存、权限与订单状态应由你的服务端校验。
 

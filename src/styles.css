@@ -97,8 +97,26 @@ body.storefront[data-design] .factory-store .filter.active {background:var(--fac
 /* Minimal: true white, precision product photograph and compact light cards. */
 .minimal-hero {display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:0;min-height:490px;padding:32px 0}
 .minimal-hero .hero-copy {position:relative;z-index:1}
-.minimal-scene {height:410px;margin-right:-20px}
+.minimal-scene {height:410px;margin-right:-20px;position:relative;min-width:0}
 .minimal-scene .scene-image {object-fit:contain}
+.laptop-stage {height:100%;perspective:1100px;outline:none;border-radius:12px}
+.laptop-object {width:100%;height:100%;transform:rotateX(var(--laptop-x,0deg)) rotateY(var(--laptop-y,0deg));transform-origin:50% 55%;transition:transform .55s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+.laptop-object .scene-image {user-select:none;-webkit-user-drag:none}
+[data-laptop-scene][data-interactive="true"] .laptop-stage {cursor:grab;touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
+[data-laptop-scene][data-interactive="true"] .laptop-stage:focus-visible {outline:2px solid #89919b;outline-offset:-3px}
+[data-laptop-scene][data-interactive="true"] .laptop-stage:hover .laptop-object {transition-duration:.18s}
+[data-laptop-scene][data-dragging="true"] .laptop-stage {cursor:grabbing}
+[data-laptop-scene][data-dragging="true"] .laptop-object {transition-duration:.06s}
+.laptop-controls {position:absolute;left:12px;right:12px;bottom:0;display:flex;align-items:center;justify-content:center;gap:14px;font-size:10px;letter-spacing:.3px;color:var(--factory-muted)}
+.laptop-hint {display:inline-flex;align-items:center;gap:7px;pointer-events:none}
+.laptop-hint svg {height:16px;width:16px;flex-shrink:0}
+body.storefront[data-design] .laptop-reset.subtle {display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:8px 10px;border:0;border-radius:6px;font-size:10px;background:transparent;color:var(--factory-muted);box-shadow:none}
+body.storefront[data-design] .laptop-reset.subtle:hover {background:#f5f6f8;color:#15171b}
+.laptop-touch-hint,.laptop-posed-hint {display:none}
+[data-laptop-scene][data-posed="true"] :is(.laptop-mouse-hint,.laptop-touch-hint) {display:none}
+[data-laptop-scene][data-posed="true"] .laptop-posed-hint {display:inline}
+@media(pointer:coarse),(max-width:767px){.laptop-mouse-hint{display:none}.laptop-touch-hint{display:inline}}
+@media(prefers-reduced-motion:reduce){.laptop-object{transform:none!important;transition:none!important}}
 .design-minimal .catalogue {border-top:1px solid var(--factory-border)}
 /* Orbital: a single central planetary horizon, search at the focal point. */
 .orbital-hero {position:relative;isolation:isolate;min-height:510px;display:grid;place-items:center;overflow:hidden;margin:0 -32px}

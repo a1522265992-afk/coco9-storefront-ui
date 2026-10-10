@@ -8,6 +8,7 @@ import {arcade} from './themes/arcade.js';
 import {editorial} from './themes/editorial.js';
 import {neon} from './themes/neon.js';
 export {themes, themeFor} from './registry.js';
+export {bindLaptop} from './laptop.js';
 const renderers = {minimal, orbital, warm, arcade, editorial, neon};
 export function renderStorefront(model = {}) {
   const theme = themeFor(model.template);

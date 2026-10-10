@@ -7,7 +7,7 @@ import {themes} from '../src/registry.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=rel=>fs.readFile(path.join(root,rel),'utf8');
 const asJSON=value=>JSON.stringify(value).replaceAll('<','\\u003c');
-const files=['src/registry.js','src/shared.js',...themes.map(t=>'src/themes/'+t.design+'.js'),'src/index.js','src/navigation.js','demo.js'];
+const files=['src/registry.js','src/shared.js',...themes.map(t=>'src/themes/'+t.design+'.js'),'src/laptop.js','src/index.js','src/navigation.js','demo.js'];
 const built=new Set(),chunks=['const __modules=Object.create(null);'];
 function dependency(file,relative){const key=path.posix.normalize(path.posix.join(path.posix.dirname(file),relative));assert.ok(built.has(key),'Bundle dependency order: '+key);return key;}
 for(const file of files){
