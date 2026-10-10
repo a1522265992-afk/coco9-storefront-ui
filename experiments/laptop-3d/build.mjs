@@ -1,0 +1,13 @@
+import {build} from 'esbuild';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.dirname(fileURLToPath(import.meta.url));
+const result=await build({entryPoints:[path.join(root,'main.js')],bundle:true,minify:true,format:'iife',target:['chrome100','safari16'],supported:{'template-literal':false},write:false,legalComments:'inline'});
+const script=result.outputFiles[0].text.replaceAll('</script','<\\/script');
+const template=await fs.readFile(path.join(root,'shell.html'),'utf8');
+const css=await fs.readFile(path.join(root,'style.css'),'utf8');
+const license=await fs.readFile(path.join(root,'node_modules/three/LICENSE'),'utf8');
+const output=template.replace('/* PREVIEW_CSS */',()=>css).replace('/* PREVIEW_JS */',()=>script);
+await fs.writeFile(path.join(root,'laptop-3d.html'),'<!--\nOriginal laptop geometry, UI and textures: MIT, Coco9 contributors.\nThree.js license:\n'+license+'\n-->\n'+output);
+console.log('Built laptop-3d.html: '+(Buffer.byteLength(output)/1024).toFixed(0)+' KiB, all code and textures local; no network requests.');
