@@ -4,7 +4,7 @@
 
 **先看效果：下载 [preview.html 单文件预览](https://github.com/lincwang123-bot/coco9-storefront-ui/raw/refs/heads/main/preview.html)，保存后用浏览器打开。** 六套模板、图片和交互都已内嵌，不用安装软件，也不用启动服务器。
 
-另有 **[电脑真 3D 独立预览](https://github.com/lincwang123-bot/coco9-storefront-ui/raw/refs/heads/main/experiments/laptop-3d/laptop-3d.html)**：支持旋转、缩放、屏幕开合与金属配色切换。使用 Three.js，下载后可离线打开；[使用与修改说明](experiments/laptop-3d/README.md)。它是独立实验，不会改变上面的六模板预览。
+另有 **[电脑真 3D 独立预览](https://github.com/lincwang123-bot/coco9-storefront-ui/raw/refs/heads/main/experiments/laptop-3d/laptop-3d.html)**：支持静止 3 秒后缓慢自动旋转、拖动、缩放、屏幕开合与金属配色切换，并加入摄影棚光照与屏幕玻璃反射。使用 Three.js，下载后可离线打开；[使用与修改说明](experiments/laptop-3d/README.md)。它是独立实验，不会改变上面的六模板预览。
 
 > 这是前端 UI 和演示商品，不是完整的电商系统。真实商品、用户、订单与支付需要连接你自己的后端。
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {mergeGeometries,toCreasedNormals} from 'three/addons/utils/BufferGeometryUtils.js';
 
 // Original, unbranded model. Metres are scaled by 10 for comfortable scene units.
 // Local axes: X across the keyboard, Y up, +Z towards the user. Lid pivots at its lower edge.
@@ -10,9 +10,18 @@ function roundShape(w,h,r){
   s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);
   s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;
 }
-function panelGeometry(w,h,d,r=.04,bevel=.008){
-  const geometry=new THREE.ExtrudeGeometry(roundShape(w-bevel*2,h-bevel*2,Math.max(.001,r-bevel)),{depth:Math.max(.0001,d-bevel*2),bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:bevel,bevelThickness:bevel,curveSegments:8});
-  geometry.translate(0,0,-d/2+bevel);geometry.computeVertexNormals();return geometry;
+function panelGeometry(w,h,d,r=.04,bevel=.008,holes=[]){
+  const shape=roundShape(w-bevel*2,h-bevel*2,Math.max(.001,r-bevel));
+  for(const hole of holes){const path=new THREE.Path();const points=roundShape(hole.w,hole.h,hole.r).getPoints(12);path.setFromPoints(points.map(p=>new THREE.Vector2(p.x+(hole.x||0),p.y+(hole.y||0))));shape.holes.push(path);}
+  const geometry=new THREE.ExtrudeGeometry(shape,{depth:Math.max(.0001,d-bevel*2),bevelEnabled:true,bevelSegments:5,steps:1,bevelSize:bevel,bevelThickness:bevel,curveSegments:12});
+  geometry.translate(0,0,-d/2+bevel);
+  // Smooth the machined bevels without welding away sub-millimetre details.
+  const originalNormals=geometry.attributes.normal.array.slice();
+  geometry.scale(100,100,100);toCreasedNormals(geometry,Math.PI/2.4);geometry.scale(.01,.01,.01);
+  // Planar cap triangles stay exactly planar; smoothing them produces diagonal shading seams.
+  const normals=geometry.attributes.normal;
+  for(let i=0;i<normals.count;i++)if(Math.abs(originalNormals[i*3+2])>.999)normals.setXYZ(i,0,0,originalNormals[i*3+2]);
+  return geometry;
 }
 function texture(canvas){const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;}
 function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return[c,c.getContext('2d')];}
@@ -68,37 +77,35 @@ function storefront(){
 export function createLaptop(){
   const root=new THREE.Group();root.name='Coco9 original laptop';
   const base=new THREE.Group();base.name='Unibody chassis';root.add(base);
-  const lid=new THREE.Group();lid.name='Display hinge';lid.position.set(0,.27,-1.09);root.add(lid);
-  const metal=new THREE.MeshStandardMaterial({color:0xc8cbd0,metalness:1,roughness:.29});metal.name='Anodised aluminium';
-  const edge=new THREE.MeshStandardMaterial({color:0xdfe2e5,metalness:1,roughness:.22});edge.name='Machined bevel';
-  const underside=new THREE.MeshStandardMaterial({color:0xb4b8bd,metalness:1,roughness:.36});
+  const lid=new THREE.Group();lid.name='Display hinge';lid.position.set(0,.226,-1.09);root.add(lid);
+  const metal=new THREE.MeshStandardMaterial({color:0xbac0c7,metalness:1,roughness:.27});metal.name='Anodised aluminium';
+  const edge=new THREE.MeshStandardMaterial({color:0xc2c8ce,metalness:1,roughness:.24});edge.name='Machined bevel';
+  const underside=new THREE.MeshStandardMaterial({color:0xaeb5bd,metalness:1,roughness:.34});
   const dark=new THREE.MeshStandardMaterial({color:0x111318,metalness:.2,roughness:.44});
   const black=new THREE.MeshStandardMaterial({color:0x090a0c,metalness:0,roughness:.7});
   const rubber=new THREE.MeshStandardMaterial({color:0x1c1e20,metalness:0,roughness:.88});
-  const keyMat=new THREE.MeshStandardMaterial({color:0x040506,metalness:0,roughness:.76});
+  const keyMat=new THREE.MeshStandardMaterial({color:0x070809,metalness:0,roughness:.62});
   const[grain,gc]=canvas(256,256);const pixels=gc.createImageData(256,256);let seed=48371;
   for(let i=0;i<pixels.data.length;i+=4){seed=(seed*1664525+1013904223)>>>0;const n=115+(seed%26);pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=n;pixels.data[i+3]=255;}gc.putImageData(pixels,0,0);
   const grainMap=new THREE.CanvasTexture(grain);grainMap.wrapS=grainMap.wrapT=THREE.RepeatWrapping;grainMap.repeat.set(10,10);
-  metal.bumpMap=underside.bumpMap=grainMap;metal.bumpScale=underside.bumpScale=.0012;
+  metal.bumpMap=underside.bumpMap=grainMap;metal.bumpScale=underside.bumpScale=.00035;
   const screwMat=new THREE.MeshStandardMaterial({color:0x53585d,metalness:1,roughness:.32});
   const add=(group,geometry,material,x=0,y=0,z=0,rx=0,ry=0,rz=0)=>{const mesh=new THREE.Mesh(geometry,material);mesh.position.set(x,y,z);mesh.rotation.set(rx,ry,rz);group.add(mesh);return mesh;};
   const slab=(group,w,h,d,r,b,mat,x,y,z,rx=0,ry=0)=>add(group,panelGeometry(w,h,d,r,b),mat,x,y,z,rx,ry);
-  slab(base,3.4,2.37,.133,.12,.024,metal,0,.12,0,-Math.PI/2);
-  slab(base,3.35,2.31,.027,.105,.006,underside,0,.054,0,-Math.PI/2);
-  // The hairline around the bottom cover remains visible at rear/underside angles.
-  slab(base,3.357,2.317,.003,.108,.001,dark,0,.066,0,-Math.PI/2);
-  slab(base,3.355,2.315,.024,.108,.005,underside,0,.052,0,-Math.PI/2);
-  slab(base,2.79,1.193,.012,.065,.004,dark,0,.187,-.298,-Math.PI/2);
-  // Trackpad chamfer, inset surface, and front opening scallop.
-  slab(base,1.37,.661,.005,.055,.001,edge,0,.187,.689,-Math.PI/2);
-  slab(base,1.349,.640,.008,.046,.002,metal,0,.190,.689,-Math.PI/2);
-  slab(base,.52,.025,.035,.012,.003,underside,0,.170,1.174,0);
-  slab(base,.42,.012,.010,.006,.002,edge,0,.156,1.185,0);
+  slab(base,3.4,2.37,.130,.12,.020,metal,0,.100,0,-Math.PI/2);
+  slab(base,3.34,2.31,.012,.095,.004,underside,0,.034,0,-Math.PI/2);
+  // Actual cutouts let the keycaps and trackpad sit inside the top deck.
+  const deck=panelGeometry(3.4,2.37,.020,.12,.003,[{w:2.795,h:1.19,r:.055,y:.30},{w:1.37,h:.666,r:.044,y:-.689}]);
+  add(base,deck,metal,0,.175,0,-Math.PI/2);
+  slab(base,2.798,1.20,.006,.05,.001,black,0,.167,-.30,-Math.PI/2);
+  slab(base,1.369,.665,.004,.044,.001,dark,0,.173,.689,-Math.PI/2);
+  slab(base,1.353,.648,.008,.039,.001,metal,0,.1805,.689,-Math.PI/2);
+  slab(base,.44,.013,.016,.006,.002,underside,0,.171,1.181,0);
   // Hinge barrel and a long recessed exhaust vent.
-  const barrel=add(base,new THREE.CylinderGeometry(.071,.071,2.78,32),dark,0,.182,-1.07,0,0,Math.PI/2);
+  const barrel=add(base,new THREE.CylinderGeometry(.049,.049,2.78,48),dark,0,.178,-1.07,0,0,Math.PI/2);
   barrel.name='Hinge barrel';
-  slab(base,2.9,.076,.018,.02,.004,black,0,.106,-1.18,0);
-  for(let i=0;i<61;i++)slab(base,.012,.068,.009,.003,.001,underside,-1.41+i*.047,.109,-1.188,0);
+  slab(base,2.9,.043,.012,.015,.003,black,0,.096,-1.18,0);
+  for(let i=0;i<61;i++)slab(base,.010,.038,.005,.002,.0008,underside,-1.41+i*.047,.096,-1.186,0);
   // Both sides have physically modelled port mouths, linings and internal tongues.
   function usbC(side,z){
     slab(base,.083,.035,.011,.016,.002,edge,side*1.694,.124,z,0,Math.PI/2);
@@ -113,14 +120,14 @@ export function createLaptop(){
   const jackRing=add(base,new THREE.TorusGeometry(.027,.003,8,24),edge,-1.712,.124,-.16,0,Math.PI/2);
   // Discrete speaker holes use one geometry batch, not hundreds of draw calls.
   for(const side of [-1,1])for(let row=0;row<40;row++)for(let col=0;col<6;col++){
-    const hole=add(base,new THREE.CircleGeometry(.004,6),black,side*(1.458+col*.021),.1875,-.87+row*.027,-Math.PI/2);
+    const hole=add(base,new THREE.CircleGeometry(.0036,8),black,side*(1.458+col*.021),.1852,-.87+row*.027,-Math.PI/2);
   }
   // Bottom feet and screw heads are visible when the laptop is turned over.
   for(const x of [-1.38,1.38])for(const z of [-.9,.91]){
     add(base,new THREE.CylinderGeometry(.086,.080,.027,32),rubber,x,.026,z);
     add(base,new THREE.CylinderGeometry(.015,.015,.003,12),screwMat,x,.036,z+.15);
   }
-  const [labels,labelCtx]=canvas(1600,720);labelCtx.clearRect(0,0,1600,720);labelCtx.fillStyle='#bec1c7';labelCtx.textAlign='center';labelCtx.textBaseline='middle';
+  const [labels,labelCtx]=canvas(2048,920);labelCtx.clearRect(0,0,2048,920);labelCtx.fillStyle='#d0d4d8';labelCtx.textAlign='center';labelCtx.textBaseline='middle';
   const rows=[
     [['esc',1.5],...Array.from({length:12},(_,i)=>['F'+(i+1),1]),['◉',1]],
     [...['`','1','2','3','4','5','6','7','8','9','0','−','='].map(x=>[x,1]),['delete',1.5]],
@@ -134,32 +141,31 @@ export function createLaptop(){
     const z=-.81+ri*.182;const kh=ri===0?.093:.150;let current=-keyWidth/2;
     row.forEach(([label,units])=>{
       const kw=cell*units-.023,x=current+cell*units/2;current+=cell*units;
-      slab(base,kw,kh,.023,.021,.004,keyMat,x,.204,z,-Math.PI/2);
-      const tx=(x/keyWidth+.5)*1600,ty=(z+.91)/keyDepth*720;
-      labelCtx.font=(label.length>2?'19':'26')+'px -apple-system,Arial,sans-serif';labelCtx.fillText(label,tx,ty);
-      if(ri===1&&label.length===1&&label!=='`'){labelCtx.font='13px Arial';}
+      slab(base,kw,kh,.017,.018,.003,keyMat,x,.1755,z,-Math.PI/2);
+      const tx=(x/keyWidth+.5)*2048,ty=(z+.91)/keyDepth*920;
+      labelCtx.font=(label.length>2?'21':'29')+'px -apple-system,Arial,sans-serif';labelCtx.fillText(label,tx,ty);
     });
   });
   const labelsMat=new THREE.MeshBasicMaterial({map:texture(labels),transparent:true,alphaTest:.1,depthWrite:false,toneMapped:false});
-  add(base,new THREE.PlaneGeometry(keyWidth,keyDepth),labelsMat,0,.2165,-.35,-Math.PI/2);
+  add(base,new THREE.PlaneGeometry(keyWidth,keyDepth),labelsMat,0,.1845,-.35,-Math.PI/2);
   // Lid back, polished edge, black rubber gasket, glass bezel and the active display.
-  slab(lid,3.393,2.16,.064,.108,.016,metal,0,1.08,-.021);
-  slab(lid,3.37,2.137,.014,.098,.004,edge,0,1.08,.011);
-  slab(lid,3.335,2.11,.025,.088,.006,rubber,0,1.078,.022);
-  const bezelMat=new THREE.MeshPhysicalMaterial({color:0x080a0c,metalness:.05,roughness:.24,clearcoat:.9,clearcoatRoughness:.12});
-  slab(lid,3.296,2.065,.014,.073,.003,bezelMat,0,1.08,.039);
+  slab(lid,3.393,2.16,.045,.09,.010,metal,0,1.08,-.011);
+  slab(lid,3.375,2.14,.008,.083,.002,edge,0,1.08,.010);
+  slab(lid,3.365,2.13,.012,.078,.003,rubber,0,1.08,.016);
+  const bezelMat=new THREE.MeshPhysicalMaterial({color:0x030405,metalness:0,roughness:.18,clearcoat:1,clearcoatRoughness:.09,envMapIntensity:.4});
+  slab(lid,3.345,2.11,.010,.071,.002,bezelMat,0,1.08,.023);
   const wallpapers=[wallpaper(),storefront()];
-  const displayMat=new THREE.MeshBasicMaterial({map:wallpapers[0],toneMapped:false});displayMat.name='Screen content';
-  const display=flatPanel(3.16,1.975,.032,displayMat);display.position.set(0,1.093,.048);display.userData.keep=true;lid.add(display);
+  const displayMat=new THREE.MeshPhysicalMaterial({color:0x010203,emissive:0xffffff,emissiveMap:wallpapers[0],emissiveIntensity:.78,roughness:.14,metalness:0,clearcoat:1,clearcoatRoughness:.09,envMapIntensity:.35});displayMat.name='Screen glass and content';
+  const display=flatPanel(3.24,2.025,.029,displayMat);display.position.set(0,1.085,.029);display.userData.keep=true;lid.add(display);
   // Camera dot in the thin top bezel.
-  add(lid,new THREE.CircleGeometry(.012,24),black,0,2.117,.0485);
-  add(lid,new THREE.CircleGeometry(.005,16),new THREE.MeshPhysicalMaterial({color:0x142633,metalness:.6,roughness:.13,clearcoat:1}),0,2.117,.049);
+  add(lid,new THREE.CircleGeometry(.009,24),black,0,2.118,.0295);
+  add(lid,new THREE.CircleGeometry(.004,16),new THREE.MeshPhysicalMaterial({color:0x142633,metalness:.6,roughness:.13,clearcoat:1}),0,2.118,.030);
   // A fine underside inscription, without a third-party logo or trademark.
   const[engraving,ec]=canvas(512,80);ec.fillStyle='#6f757b';ec.textAlign='center';ec.font='16px Arial';ec.fillText('C O C O 9    /    D I G I T A L   E V E R Y D A Y',256,40);
   add(base,new THREE.PlaneGeometry(.8,.125),new THREE.MeshBasicMaterial({map:texture(engraving),transparent:true,depthWrite:false}),0,.037,.55,Math.PI/2);
   mergeStatic(base);mergeStatic(lid);
   const setOpen=degrees=>{lid.rotation.x=Math.PI/2-THREE.MathUtils.degToRad(degrees)};setOpen(106);
-  const setFinish=name=>{const silver=name==='silver';metal.color.setHex(silver?0xc8cbd0:0x53565c);underside.color.setHex(silver?0xb4b8bd:0x454950);edge.color.setHex(silver?0xdfe2e5:0x8d9198)};
-  const setScreen=shop=>{displayMat.map=wallpapers[shop?1:0];displayMat.needsUpdate=true};
+  const setFinish=name=>{const silver=name==='silver';metal.color.setHex(silver?0xbac0c7:0x555b63);underside.color.setHex(silver?0xaeb5bd:0x454b53);edge.color.setHex(silver?0xc2c8ce:0x777f88)};
+  const setScreen=shop=>{displayMat.emissiveMap=wallpapers[shop?1:0];displayMat.needsUpdate=true};
   return {root,lid,base,setOpen,setFinish,setScreen,textures:wallpapers};
 }
