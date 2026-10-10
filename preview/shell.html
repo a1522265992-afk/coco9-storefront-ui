@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="离线查看 Coco9 六套数字商品店面，支持桌面、手机和交互预览。"><title>Coco9 · 六套店面预览</title><style>__SHELL_CSS__</style></head>
+<body>
+<header class="showcase-header"><div class="identity"><span class="logo">C</span><div><strong>Coco9</strong><span>六套店面 · 离线预览</span></div></div><a href="#guide" class="guide-link">怎么使用 ↗</a></header>
+<main>
+<section class="intro"><div><p class="eyebrow">SIX WAYS TO MAKE IT YOURS</p><h1>先选一个，你喜欢的样子。</h1><p>点选下方模板，试试搜索、分类与商品详情。切换手机视图，看看小屏幕上的效果。</p></div><span class="offline"><i></i>图片已内嵌 · 无需联网</span></section>
+<div id="themes" class="theme-grid" role="group" aria-label="选择模板"></div>
+<section class="stage" aria-labelledby="current-name">
+<div class="stage-toolbar"><div><h2 id="current-name">极简旗舰</h2><p id="current-description"></p></div><div class="view-buttons" role="group" aria-label="预览尺寸"><button type="button" data-size="desktop" aria-pressed="true">桌面 <span>1440</span></button><button type="button" data-size="mobile" aria-pressed="false">手机 <span>390</span></button></div></div>
+<div class="viewport-info"><span id="view-status" aria-live="polite"></span><span>演示商品与价格，不支持真实交易</span></div>
+<div id="canvas"><div id="frame-wrap"><iframe id="preview-frame" title="极简旗舰店面预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></div></div>
+<p class="stage-hint">在预览区域内滚动可查看完整页面。切换模板会重置搜索与分类。</p>
+</section>
+<section id="guide" class="guide"><p class="eyebrow">GET STARTED</p><h2>看效果，或开始做自己的店。</h2><div class="guide-columns"><article><span class="step">01 / 只想看看</span><h3>这个文件就够了</h3><p>双击 <code translate="no">preview.html</code>，选择六张缩略图中的任意一张。用「桌面 / 手机」按钮切换尺寸，点击商品可打开详情。整个预览可离线使用。</p></article><article><span class="step">02 / 想改成自己的</span><h3>下载源码，再修改</h3><p>下载开源仓库 ZIP 并解压。安装 Node.js 20 或以上，在项目目录运行 <code translate="no">npm start</code>，用浏览器打开 <code translate="no">http://127.0.0.1:5173</code>。</p><p>商品示例在 <code translate="no">demo.js</code>，布局在 <code translate="no">src/themes/</code>，样式在 <code translate="no">src/styles.css</code>。详细接入步骤见仓库 README。</p></article><article><span class="step">03 / 准备上线</span><h3>连接你自己的业务</h3><p>这份开源项目提供 UI 和交互示例。真实商店还需要商品、用户、订单与支付服务；价格与库存由你的服务端校验。可将完整静态文件部署到支持 HTTPS 的托管服务。</p><p>修改源码后运行 <code translate="no">npm run build:preview</code>，重新生成这个离线文件。</p></article></div><a class="repo-link" href="https://github.com/lincwang123-bot/coco9-storefront-ui" target="_blank" rel="noopener noreferrer">查看开源仓库与完整说明 ↗</a><p class="online-note">上方仓库链接需要联网；模板预览不需要。</p></section>
+</main><footer>Coco9 Storefront UI <span>六套独立设计 · MIT License</span></footer>
+<script id="preview-data" type="application/json">__PREVIEW_DATA__</script><script>__SHELL_JS__</script>
+</body></html>
