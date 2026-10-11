@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "coco9-local",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-10-12",
+  "compatibility_date": "2026-09-01",
   "d1_databases": [
     {
       "binding": "DB",
