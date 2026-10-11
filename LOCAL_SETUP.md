@@ -44,11 +44,17 @@ npm run dev:full
 
 第 2 个命令会生成 .dev.vars，内含 64 位十六进制随机管理令牌。它被 .gitignore 排除，不得提交 GitHub，也不要向任何人发送。打开该文件，复制 ADMIN_TOKEN= 后面的值，输入商家后台的管理密钥输入框。不要把整行 ADMIN_TOKEN= 前缀也复制进去。
 
-第 3 个命令把 migrations/0001_initial.sql 写入本地数据库。默认数据保存在 .wrangler/state 目录；不会写入真实 Cloudflare 数据库。若重复执行初始化，样例商品不会重复插入。
+第 3 个命令使用项目根目录的 wrangler.jsonc，将 migrations/0001_initial.sql 写入本地数据库。默认数据保存在 .wrangler/state 目录；不会写入真实 Cloudflare 数据库。若重复执行初始化，样例商品不会重复插入。
 
 默认 CHECKOUT_ENABLED=false，仅可查看商品，不能创建新订单；即使启用下单，也没有收款能力，新订单只会是待支付状态。不要向真实客户公开这个本地版本。
 
 如需纯本地测试创建待支付订单，可在 .dev.vars 中将 CHECKOUT_ENABLED=false 改为 CHECKOUT_ENABLED=true，重启 npm run dev:full；不会有真实扣款。不要将测试订单人工标记为真实已收款。
+
+## 如果你刚才遇到 --config 报错
+
+在项目目录执行 git pull，更新修复后的 package.json 和标准 wrangler.jsonc，然后重新执行 npm run db:local:init 和 npm run dev:full。无须重新克隆，也不要删除 .dev.vars 和 .wrangler 数据目录。
+
+本地专用 wrangler.jsonc 里的数据库 ID 是占位符，不可直接用于生产云端部署。上云时必须换成实际数据库绑定配置。
 
 ## 本地验证清单
 
