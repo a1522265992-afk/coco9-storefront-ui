@@ -1,3 +1,36 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Coco9 Storefront UI · 六套开源店面</title><link rel="stylesheet" href="./demo.css"><link rel="icon" href="./favicon.svg"></head>
-<body class="storefront"><a class="skip" href="#main">跳转到商品</a><header><a class="brand" href="#/shop"><span class="brandmark">C</span><span>数字商店</span></a><nav id="store-navigation" aria-label="主导航"><a href="#/shop">浏览商品</a><a href="#/about">关于此演示</a></nav><button class="nav-toggle" type="button" aria-controls="store-navigation" aria-expanded="false">菜单</button><label class="theme-picker"><span>店面风格</span><select id="theme" aria-label="选择店面风格"></select></label></header><aside class="demo-notice">开源 UI 演示 · 商品与价格均为示例，不支持交易</aside><main id="main" tabindex="-1"></main><footer><span>Coco9 Storefront UI</span><span>六套原生 JavaScript 店面 · MIT License</span><a href="#/about">使用说明</a></footer><dialog id="detail" aria-labelledby="detail-title"><div id="detail-content"></div><form method="dialog"><button>关闭预览</button></form></dialog><script type="module" src="./demo.js"></script></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="数字服务与工具商城。商品上架中，付款功能尚未开放。">
+  <title>AI 数字服务 · 独立商城</title>
+  <link rel="stylesheet" href="./demo.css">
+  <link rel="stylesheet" href="./shop.css">
+  <link rel="icon" href="./favicon.svg">
+</head>
+<body class="storefront" data-template="editorial" data-design="editorial">
+  <a class="skip" href="#main">跳转到商品</a>
+  <header>
+    <a class="brand" href="#/shop"><span class="brandmark">A</span><span>AI 数字服务</span></a>
+    <nav id="store-navigation" aria-label="主导航">
+      <a href="#/shop">精选服务</a>
+      <a href="#/orders">查询订单</a>
+      <a href="#/support">帮助与售后</a>
+    </nav>
+    <button class="nav-toggle" type="button" aria-controls="store-navigation" aria-expanded="false">菜单</button>
+  </header>
+  <aside class="demo-notice" id="store-notice">测试商店 · 目前不支持在线付款及正式下单</aside>
+  <main id="main" tabindex="-1"></main>
+  <footer>
+    <span>AI 数字服务</span>
+    <span>独立经营 · 非第三方产品官方商城</span>
+    <a href="#/support">服务与退款说明</a>
+  </footer>
+  <dialog id="detail" aria-labelledby="detail-title">
+    <div id="detail-content"></div>
+    <form method="dialog"><button class="dialog-close">关闭</button></form>
+  </dialog>
+  <script type="module" src="./demo.js"></script>
+</body></html>

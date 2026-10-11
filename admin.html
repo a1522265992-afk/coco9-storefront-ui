@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>订单管理 · AI 数字服务</title>
+<link rel="stylesheet" href="./admin.css"></head>
+<body>
+<header><h1>订单管理</h1><a href="./index.html">返回商城</a></header>
+<main>
+<section class="panel"><h2>商家验证</h2><p>请输入 Cloudflare Secret 中配置的 ADMIN_TOKEN。密钥不会保存在浏览器本地存储。</p>
+<form id="login"><label>管理密钥<input type="password" name="token" autocomplete="off" required></label><button type="submit">加载订单</button></form></section>
+<section class="panel" id="orders-panel" hidden><div class="panel-top"><h2>最近 100 笔订单</h2><button id="reload">刷新</button></div>
+<p>只有在支付渠道后台独立核实到账后，才能标记「已付款」。不要仅凭客户截图发货。</p><div id="orders"></div></section>
+<p id="feedback" role="status" aria-live="polite"></p>
+</main>
+<script type="module" src="./admin.js"></script>
+</body></html>

@@ -1,0 +1,21 @@
+/* Merchant storefront additions; Coco9 editorial layout remains intact. */
+body[data-design="editorial"] .demo-notice {background:#f6f6f4;color:#545454}
+body[data-design="editorial"] footer {gap:22px;flex-wrap:wrap}
+.shop-page {width:min(820px,calc(100% - 42px));margin:64px auto 100px;min-height:48vh}
+.shop-page h1 {font-size:clamp(30px,5vw,58px);letter-spacing:-.045em;margin:14px 0 24px}
+.shop-page .eyebrow {font-size:12px;font-weight:750;letter-spacing:.22em}
+.shop-page p {color:#333}
+.shop-page a {text-decoration:underline}
+.shop-muted {color:#626262;font-size:14px;line-height:1.7}
+.shop-warning {padding:12px 15px;background:#f3f3f1;border-left:3px solid #222}
+#detail {width:min(540px,calc(100% - 28px));border-radius:4px;max-height:min(90vh,750px);overflow-y:auto}
+#detail h2 {font-size:27px;letter-spacing:-.03em}
+#detail input,.shop-form input {display:block;width:100%;margin-top:8px;border:1px solid #ccc;padding:13px;border-radius:3px}
+#order-form label,.shop-form label {font-weight:600;display:block;margin:18px 0 12px}
+#order-form button,.shop-form button {background:#191919;color:white;border-radius:3px;min-height:44px}
+#order-form button:disabled {opacity:.5;cursor:not-allowed}
+#order-feedback:not(:empty) {padding:10px;background:#fff4ec;color:#8b3b0c}
+.shop-form {max-width:560px}
+.shop-order-result {padding:22px;margin-top:24px;background:#f6f6f4;border:1px solid #e5e5e0}
+.shop-order-result h2 {margin-top:0}
+@media(max-width:767px){.shop-page{margin:38px auto 72px}body[data-design="editorial"] footer{align-items:flex-start}}

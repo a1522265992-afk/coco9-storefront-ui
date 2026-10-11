@@ -1,15 +1,14 @@
 {
   "name": "coco9-storefront-ui",
-  "version": "1.0.0",
-  "description": "Six framework-free digital storefront themes, isolated from commerce infrastructure",
+  "version": "1.1.0",
+  "description": "Coco9 editorial storefront with Cloudflare D1 manual order workflow",
   "type": "module",
   "license": "MIT",
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": {"node": ">=20"},
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
-    "build:preview": "node scripts/build-preview.mjs"
+    "build:preview": "node scripts/build-preview.mjs",
+    "build:shop": "node scripts/build-shop.mjs"
   }
 }
