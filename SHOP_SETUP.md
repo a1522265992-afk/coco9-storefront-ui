@@ -13,15 +13,11 @@
 
 用户不会从本商城跳往上游。手动到上游采购是商家自己的操作。不得要求客户填写登录密码、验证码、密钥等敏感信息。
 
-## 本地预览
+## 本地预览与完整本地后端
 
-安装 Node.js 20+，执行 npm start。
+请先阅读 LOCAL_SETUP.md。它包含 Git 克隆开发分支、Node 安装、静态预览，以及使用 Wrangler + D1 在自己电脑上本地测试订单和后台的完整命令。
 
-打开 http://127.0.0.1:5173 。本地服务器仅提供静态页面，不运行订单 API，因此会显示演示商品并关闭下单。
-
-可执行 npm test 和 npm run build:shop。
-
-build:shop 输出 dist/ 静态文件，保留原来的 src/assets 和主题文件。目录 functions/ 在 Cloudflare Pages 中单独部署，无需复制进 dist/。
+静态预览使用 npm start（http://127.0.0.1:5173），完整本地开发使用 npm run build:shop、npm run setup:local、npm run db:local:init、npm run dev:full（http://127.0.0.1:8788）。
 
 ## Cloudflare Pages 部署
 

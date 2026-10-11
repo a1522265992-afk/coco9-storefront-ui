@@ -4,11 +4,19 @@
   "description": "Coco9 editorial storefront with Cloudflare D1 manual order workflow",
   "type": "module",
   "license": "MIT",
-  "engines": {"node": ">=20"},
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
     "build:preview": "node scripts/build-preview.mjs",
-    "build:shop": "node scripts/build-shop.mjs"
+    "build:shop": "node scripts/build-shop.mjs",
+    "setup:local": "node scripts/setup-local.mjs",
+    "db:local:init": "wrangler d1 execute DB --local --config wrangler.local.toml --file migrations/0001_initial.sql --yes",
+    "dev:full": "wrangler pages dev dist --config wrangler.local.toml"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
   }
 }
