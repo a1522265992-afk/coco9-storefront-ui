@@ -13,8 +13,8 @@
     "build:preview": "node scripts/build-preview.mjs",
     "build:shop": "node scripts/build-shop.mjs",
     "setup:local": "node scripts/setup-local.mjs",
-    "db:local:init": "wrangler d1 execute DB --local --config wrangler.local.toml --file migrations/0001_initial.sql --yes",
-    "dev:full": "wrangler pages dev dist --config wrangler.local.toml"
+    "db:local:init": "wrangler d1 execute DB --local --file migrations/0001_initial.sql --yes",
+    "dev:full": "wrangler pages dev dist"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
