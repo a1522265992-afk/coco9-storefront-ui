@@ -19,6 +19,10 @@
 
 静态预览使用 npm start（http://127.0.0.1:5173），完整本地开发使用 npm run build:shop、npm run setup:local、npm run db:local:init、npm run dev:full（http://127.0.0.1:8788）。
 
+## 注意：本地配置和云端部署
+
+仓库中的 wrangler.jsonc 专为本地联调，包含占位的 D1 数据库 ID。上云前务必使用正式 Cloudflare Pages 项目配置，并将占位 ID 替换为真实 D1 配置；不要原样将它当作生产部署配置。
+
 ## Cloudflare Pages 部署
 
 1. 在 Cloudflare 创建 Pages 项目，连接当前 GitHub 仓库（建议先合并 PR）。
